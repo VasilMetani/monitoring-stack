@@ -1,0 +1,43 @@
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: prometheus-strip-prefix
+  namespace: monitoring
+spec:
+  stripPrefix:
+    prefixes:
+      - /prometheus
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: prometheus
+  namespace: monitoring
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: PathPrefix(`/prometheus`)
+      kind: Rule
+      middlewares:
+        - name: prometheus-strip-prefix
+      services:
+        - name: prometheus-kube-prometheus-prometheus
+          port: 9090
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: loki
+  namespace: monitoring
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: PathPrefix(`/loki`)
+      kind: Rule
+      services:
+        - name: loki-gateway
+          port: 80

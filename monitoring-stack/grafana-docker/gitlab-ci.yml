@@ -1,0 +1,12 @@
+stages:
+  - deploy
+
+deploy:
+  stage: deploy
+  script:
+    - docker-compose pull
+    - docker-compose up -d
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+  tags:
+    - grafana-runner

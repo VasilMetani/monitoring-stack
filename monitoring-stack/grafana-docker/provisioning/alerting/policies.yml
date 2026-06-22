@@ -1,0 +1,11 @@
+apiVersion: 1
+
+policies:
+  - orgId: 1
+    receiver: Email
+    group_by:
+      - alertname
+      - namespace
+    routes:
+      - receiver: Slack
+        continue: true  # sends to Slack AND continues to parent (Email)

@@ -1,0 +1,30 @@
+services:
+  grafana:
+    image: grafana/grafana:13.0.2
+    container_name: grafana
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./provisioning/datasources/:/etc/grafana/provisioning/datasources/
+      - ./provisioning/dashboards/:/etc/grafana/provisioning/dashboards/
+      - ./provisioning/alerting/:/etc/grafana/provisioning/alerting/
+      - ./dashboards/:/var/lib/grafana/dashboards/
+
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_AUTH_ANONYMOUS_ENABLED: "false"
+      GF_SMTP_ENABLED: "true"
+      GF_SMTP_HOST: smtp.gmail.com:587
+      GF_SMTP_USER: ${SMTP_USER}
+      GF_SMTP_PASSWORD: ${SMTP_PASSWORD}
+      GF_SMTP_FROM_ADDRESS: ${SMTP_USER}
+      GF_SMTP_FROM_NAME: Grafana
+      SLACK_WEBHOOK_URL: ${SLACK_WEBHOOK_URL}
+      ALERT_EMAIL: ${ALERT_EMAIL}
+
+volumes:
+  grafana-data:
