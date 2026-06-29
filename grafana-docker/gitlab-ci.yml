@@ -4,7 +4,7 @@ stages:
 deploy:
   stage: deploy
   script:
-    - docker-compose pull
+    - cd grafana-docker
     - docker-compose up -d
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
